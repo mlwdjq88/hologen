@@ -1,0 +1,6 @@
+{
+	"dependencies":[
+		"WZhu_toolbox",
+		"matlab_instrument_control"
+	]
+}

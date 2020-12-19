@@ -1,0 +1,24 @@
+function [B,T,xs,ys]=getBoundaryCoords(lambda,delta,f,R,db,Nx,Ny,p,q)
+lambda=lambda*db;
+delta=delta*db;
+f=f*db;
+R=R*db;
+T=lambda/sin(atan(delta/f/2));
+Rx=(-500e-3+p*5e-3)*db;
+Rx(2)=Rx+db*5e-3;
+Ry=(-500e-3+q*5e-3)*db;
+Ry(2)=Ry+db*5e-3;
+[x,y]=meshgrid(linspace(Rx(1),Rx(2),Nx*2+1),linspace(Ry(1),Ry(2),Ny*2+1));
+[TH,r] = cart2pol(x,y) ;
+rs=sqrt(r*R);
+xs=rs.*cos(TH);
+ys=rs.*sin(TH);
+E=exp(1i*2*pi/lambda*sqrt((xs-delta/2).^2+ys.^2+f.^2))+...
+    exp(1i*2*pi/lambda*sqrt((xs+delta/2).^2+ys.^2+f.^2));
+A=ones(size(E));
+I=A.*abs(2+E);
+I=I.^2;
+th=8;
+I(I<th)=0;
+I(I>th)=1;
+B = bwboundaries(I);
